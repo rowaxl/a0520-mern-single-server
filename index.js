@@ -20,8 +20,16 @@ app.use(passport.session());
 
 const authRoutes = require('./routes/auth.route');
 
-
 app.use('/api/auth', authRoutes);
+
+if(process.env.NODE_ENV === 'production'){
+    app.use(express.static('client/build'));
+
+    const path = require('path');
+    app('*', (req,res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    })
+}
 
 mongoose.connect(keys.mongoURI, {
     useNewUrlParser: true,
