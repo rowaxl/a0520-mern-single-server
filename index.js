@@ -4,10 +4,14 @@ const cookieSession = require('cookie-session');
 const passport = require('passport');
 
 require('./models/user.model');
+require('./models/survey.model');
 require('./services/passport');
 const keys = require('./config/keys');
 
 const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieSession({
     maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -19,8 +23,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const authRoutes = require('./routes/auth.route');
+const billingRoutes = require('./routes/billing.route');
+const surveyRoutes = require('./routes/survey.route');
 
 app.use('/api/auth', authRoutes);
+app.use('/api/stripe', billingRoutes);
+app.use('/api/surveys', surveyRoutes);
 
 
 if(process.env.NODE_ENV === 'production'){
