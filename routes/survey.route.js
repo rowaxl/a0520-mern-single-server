@@ -9,7 +9,7 @@ const surveyTemplate = require("../services/emailTemplates/surveyTemplate");
 
 const router = express.Router();
 
-router.get('/', requireLogin ,async (req, res) => {
+router.get('/', requireLogin , async (req, res) => {
   const surveys = await Survey.find({ _user: req.user.id }).select({ recipients: false });
   res.send(surveys);
 });
