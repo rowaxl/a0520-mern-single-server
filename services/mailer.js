@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const keys = require('../config/keys');
 
 const mailer = ({ subject, recipients }, content) => {
   async function main(subject, recipients, content) {
@@ -8,19 +9,15 @@ const mailer = ({ subject, recipients }, content) => {
 
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
+      host: keys.nodeMailerHost,
       port: 587,
       secure: false, // true for 465, false for other ports
       auth: {
-        user: "breanne.kessler@ethereal.email", // generated ethereal user
-        pass: "HHvDyMgWmUbxjvMsYk", // generated ethereal password
+        user: keys.nodeMailerUser,
+        pass: keys.nodeMailerPass
       },
     });
-
-    console.log(recipients);
-    console.log(subject);
-    console.log(content);
-
+    
     const mailOption = {
       from: '"Emeruly" <no-reply@emeruly.com>', // sender address
       to: recipients.map(({email}) => email), // list of receivers
