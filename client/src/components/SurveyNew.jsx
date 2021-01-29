@@ -1,11 +1,35 @@
-import React from 'react'
+import React, { useState } from "react";
+
+import SurveyForm from "./surveys/SurveyForm";
+import SurveyFormReview from "./surveys/SurveyFormReview";
 
 const SurveyNew = () => {
-    return (
-        <div>
-            <h1>New Survey</h1>
-        </div>
-    )
-}
+  const [showFormReview, setShowFormReview] = useState(false);
+  const [surveyFormValues, setSurveyFormValues] = useState([]);
 
-export default SurveyNew
+  const onSurveySubmit = (values) => {
+    setShowFormReview(true);
+    setSurveyFormValues(values);
+  };
+
+  const renderContent = () => {
+    if (showFormReview) {
+      return (
+        <SurveyFormReview
+          onCancel={() => setShowFormReview(false)}
+          formValues={surveyFormValues}
+        />
+      );
+    }
+    return (
+      <SurveyForm
+        onSurveySubmit={onSurveySubmit}
+        existingFormValues={surveyFormValues}
+      />
+    );
+  };
+
+  return <div className="container">{renderContent()}</div>;
+};
+
+export default SurveyNew;

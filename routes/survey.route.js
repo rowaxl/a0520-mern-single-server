@@ -9,13 +9,20 @@ const surveyTemplate = require("../services/emailTemplates/surveyTemplate");
 
 const router = express.Router();
 
-router.get("/thanks", (req, res) => {
-  res.send({ msg: "Thank you for participating...." });
+router.get('/', requireLogin ,async (req, res) => {
+  const surveys = await Survey.find({ _user: req.user.id }).select({ recipients: false });
+  res.send(surveys);
 });
+
+router.get("/:surveyId/:choices", (req, res) => {
+  //do some fun logic here :)
+
+  res.send({ msg: "Thank you for participating...." });
+}); // domain/api/surveys/23526tqdasfawraa/yes
 
 router.post("/", requireLogin, requireCredits, async (req, res) => {
   const { title, subject, body, recipients } = req.body;
-
+  console.log('b4 save: ', recipients);
   const survey = new Survey({
     title,
     subject,
