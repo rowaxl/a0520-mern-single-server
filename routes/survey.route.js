@@ -14,15 +14,35 @@ router.get('/', requireLogin , async (req, res) => {
   res.send(surveys);
 });
 
-router.get("/:surveyId/:choices", (req, res) => {
-  //do some fun logic here :)
+router.get("/:surveyId/:choices", async (req, res) => {
+  const { surveyId, choices } = req.params
+  const _id = mongoose.Schema.Types.ObjectId(surveyId)
+
+  const currentSurvey = await Survey.findById(_id)
+
+  const updateBody = choices === 'yes' ?
+    {
+      yes: currentSurvey.yes + 1
+    } :
+    {
+      no: currentSurvey.no + 1
+    }
+
+  try {
+    await Survey.updateOne(
+      { _id },
+      updateBody
+    )
+  } catch (error) {
+    res.status(422).send(err);
+  }
 
   res.send({ msg: "Thank you for participating...." });
 }); // domain/api/surveys/23526tqdasfawraa/yes
 
 router.post("/", requireLogin, requireCredits, async (req, res) => {
   const { title, subject, body, recipients } = req.body;
-  console.log('b4 save: ', recipients);
+
   const survey = new Survey({
     title,
     subject,
